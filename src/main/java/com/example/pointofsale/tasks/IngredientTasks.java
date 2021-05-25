@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class IngredientTasks extends BaseTasks<Ingredient> {
-    @Autowired
-    ServingUnitDao servingUnitDao;
+    private final int NAME_MAX_SIZE = 10;
 
     public IngredientTasks() {
         super("ingredient", Ingredient.class);

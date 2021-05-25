@@ -41,12 +41,12 @@ public class User extends BaseEntity {
         return hashPassword(password, this.salt).equals(passwordHash);
     }
 
-    public String getDefaultTimeZone() {
-        return defaultTimeZone;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setDefaultTimeZone(String defaultTimeZone) {
-        this.defaultTimeZone = defaultTimeZone;
+    public void setPasswordHash(String password) {
+        this.passwordHash = hashPassword(password, salt);
     }
 
     public String getUsername() {
