@@ -1,7 +1,5 @@
 package com.example.pointofsale.entities;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -9,32 +7,12 @@ import javax.validation.constraints.NotNull;
 @Table(name = "Employee")
 public class Employee extends BaseEntity {
 
-    @NaturalId
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQ")
-    @SequenceGenerator(name = "USERS_SEQ", sequenceName = "SEQUENCE_USERS")
-    private Integer employeeId;
-
     @JoinColumn(name = "fk_userId", referencedColumnName = "id")
-    @OneToOne(targetEntity = User.class)
+    @OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
     @NotNull
     private User user;
 
     public Employee() {
-        super();
-        this.user = user;
-    }
-
-    public Employee(User user) {
-        super();
-        this.user = user;
-    }
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
     }
 
     public User getUser() {
