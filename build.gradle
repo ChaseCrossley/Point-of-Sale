@@ -30,7 +30,9 @@ dependencies {
     // https://mvnrepository.com/artifact/javax.validation/validation-api
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-
+    implementation 'com.voodoodyne.jackson.jsog:jackson-jsog:1.1.2'
+// https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
+    implementation group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.1.Final'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
