@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class ItemDao extends BaseDao<Item>{
+public class ItemDao extends BaseDao<Item> {
     public ItemDao() {
         super(Item.class);
     }
