@@ -13,8 +13,12 @@ public class UserTasks extends BaseTasks<User> {
     }
 
     @Override
-    User getNewEntity() {
-        return new User(RandomStringUtils.randomAlphabetic(10), RandomStringUtils.randomAlphabetic(10),
-                RandomStringUtils.randomAlphabetic(10), RandomStringUtils.randomAlphabetic(10));
+    public User getNewEntity() {
+        User user = new User();
+        user.setPasswordHash(RandomStringUtils.randomAlphabetic(10));
+        user.setUsername(RandomStringUtils.randomAlphabetic(10));
+        user.setFirstName(RandomStringUtils.randomAlphabetic(10));
+        user.setLastName(RandomStringUtils.randomAlphabetic(10));
+        return user;
     }
 }

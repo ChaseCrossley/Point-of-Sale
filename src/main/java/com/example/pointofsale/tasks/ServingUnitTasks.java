@@ -13,7 +13,11 @@ public class ServingUnitTasks extends BaseTasks<ServingUnit> {
     }
 
     @Override
-    ServingUnit getNewEntity() {
-        return new ServingUnit(RandomStringUtils.randomAlphabetic(10), RandomStringUtils.randomAlphabetic(2));
+    public ServingUnit getNewEntity() {
+        ServingUnit servingUnit = new ServingUnit();
+        servingUnit.setName(RandomStringUtils.randomAlphabetic(10));
+        servingUnit.setAbbreviation(RandomStringUtils.randomAlphabetic(2));
+
+        return servingUnit;
     }
 }
