@@ -1,16 +1,19 @@
 package com.example.pointofsale.daos;
 
 import com.example.pointofsale.entities.BaseEntity;
-import com.example.pointofsale.entities.User;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 @Repository
@@ -25,12 +28,8 @@ public abstract class BaseDao<E extends BaseEntity> {
         this.type = type;
     }
 
-    public void create(E object) {
-        object.getCreatedBy().ifPresent((creatorUser -> {
-            object.setCreatedBy(entityManager.find(User.class, creatorUser.getId()));
-            object.setLastModifiedBy(entityManager.find(User.class, creatorUser.getId()));
-        }));
-        entityManager.persist(object);
+    public E create(E object) {
+        return persistOrMerge(object);
     }
 
     //Return the greeting with the passed-in id.
@@ -39,12 +38,7 @@ public abstract class BaseDao<E extends BaseEntity> {
     }
 
     public E upDate(E updatedObject) {
-        E response = null;
-        updatedObject.getLastModifiedBy().ifPresent((creatorUser -> updatedObject.setLastModifiedBy(entityManager.find(User.class, creatorUser.getId()))));
-        if (entityManager.find(type, updatedObject.getId()) != null) {
-            response = entityManager.merge(updatedObject);
-        }
-        return response;
+        return persistOrMerge(updatedObject);
     }
 
     public E deleteObjectById(int id) {
@@ -61,9 +55,17 @@ public abstract class BaseDao<E extends BaseEntity> {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<E> cq = cb.createQuery(type);
         Root<E> rootEntry = cq.from(type);
-        CriteriaQuery<E> all = cq.select(rootEntry);
+        CriteriaQuery<E> all = cq.select(rootEntry).where(cb.isFalse(rootEntry.get("deleted")));
         TypedQuery<E> allQuery = entityManager.createQuery(all);
         return allQuery.getResultList();
     }
 
+    private E persistOrMerge(E entity) {
+        if (entity.getId() == null) {
+            entityManager.persist(entity);
+            return entity;
+        } else {
+            return entityManager.merge(entity);
+        }
+    }
 }

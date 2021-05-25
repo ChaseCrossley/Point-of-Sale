@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collection;
 
 @RestController
+@CrossOrigin
 public abstract class BaseController<Entity extends BaseEntity, Dao extends BaseDao<Entity>> {
 
     @Autowired
@@ -26,6 +28,11 @@ public abstract class BaseController<Entity extends BaseEntity, Dao extends Base
         return dao.getById(id);
     }
 
+    @RequestMapping(value = "/retrieveAll", method = RequestMethod.GET)
+    public Collection<Entity> retrieveAll() throws IOException {
+        return dao.allObjects();
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Entity update(@RequestBody Entity newEntity) throws IOException {
         return dao.upDate(newEntity);
@@ -35,7 +42,7 @@ public abstract class BaseController<Entity extends BaseEntity, Dao extends Base
     public ResponseEntity<String> deleteEntity(@PathVariable("id") int id) throws IOException {
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         if (dao.getById(id) != null) {
-            dao.deleteObjectById(id);
+                dao.deleteObjectById(id);
             responseStatus = HttpStatus.ACCEPTED;
         }
         return new ResponseEntity<>(responseStatus);

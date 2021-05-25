@@ -1,24 +1,20 @@
 package com.example.pointofsale.entities;
 
-import org.springframework.data.jpa.domain.AbstractAuditable;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
 
 @MappedSuperclass
-public abstract class BaseEntity extends AbstractAuditable<User, Integer> {
+public abstract class BaseEntity extends AbstractPersistable<Integer> {
 
     boolean deleted = false;
 
     public BaseEntity() {
         super();
-        setLastModifiedDate(LocalDateTime.now());
-        setCreatedDate(LocalDateTime.now());
     }
 
-    public BaseEntity(int id) {
-        super();
-        this.setId(id);
+    public void setId(Integer id) {
+        super.setId(id);
     }
 
     public boolean isDeleted() {
@@ -34,10 +30,6 @@ public abstract class BaseEntity extends AbstractAuditable<User, Integer> {
         return this.getClass().getSimpleName() + "{" +
                 "id=" + getId() +
                 ", new=" + isNew() +
-                ", createdBy=" + getCreatedBy() +
-                ", createdDate=" + getCreatedDate() +
-                ", lastModifiedBy=" + getLastModifiedBy() +
-                ", lastModifiedDate=" + getLastModifiedDate() +
                 '}';
     }
 }

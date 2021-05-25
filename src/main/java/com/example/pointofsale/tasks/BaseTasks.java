@@ -1,5 +1,6 @@
 package com.example.pointofsale.tasks;
 
+import com.example.pointofsale.daos.BaseDao;
 import com.example.pointofsale.entities.BaseEntity;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,11 +12,11 @@ import java.util.NoSuchElementException;
 
 
 public abstract class BaseTasks<Entity extends BaseEntity> {
-    private final String PATH = "http://localhost:8080";
+    private final String PATH = "http://0.0.0.0:3724/api/";
     private final RestTemplate restTemplate = new RestTemplate();
     private final List<Integer> idSet = new ArrayList<>();
-    private String directive;
-    private Class<Entity> entityClass;
+    private final String directive;
+    private final Class<Entity> entityClass;
 
     public BaseTasks(String directive, Class<Entity> entityClass) {
         this.directive = directive;
@@ -29,7 +30,13 @@ public abstract class BaseTasks<Entity extends BaseEntity> {
         idSet.add(entity.getId());
     }
 
-    abstract Entity getNewEntity();
+    abstract public Entity getNewEntity();
+
+    private Entity getUpdateEntity(Entity entity) {
+        Entity updated = getNewEntity();
+        updated.setId(entity.getId());
+        return updated;
+    }
 
     @Scheduled(cron = "*/10 * * * * *")
     public void deleteEntity() {
@@ -40,10 +47,10 @@ public abstract class BaseTasks<Entity extends BaseEntity> {
     @Scheduled(cron = "*/7 * * * * *")
     public void updateEntity() {
         int indexToUpdate = idSet.get(RandomUtils.nextInt(0, idSet.size() - 1));
-        Entity newEntity = restTemplate.getForObject(PATH + directive + "/retrieve/" + indexToUpdate, entityClass);
-        restTemplate.put(PATH + directive + "/update", newEntity);
+        Entity oldEntity = restTemplate.getForObject(PATH + directive + "/retrieve/" + indexToUpdate, entityClass);
+        restTemplate.put(PATH + directive + "/update", getUpdateEntity(oldEntity));
         Entity checkUpdate = restTemplate.getForObject(PATH + directive + "/retrieve/" + indexToUpdate, entityClass);
-        if (!newEntity.equals(checkUpdate)) {
+        if (!oldEntity.equals(checkUpdate)) {
             throw new NoSuchElementException();
         }
     }
