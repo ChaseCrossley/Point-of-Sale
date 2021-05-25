@@ -3,23 +3,19 @@ package com.example.pointofsale.entities;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "\"User\"")
+@Table(name = "\"User\"", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
 public class User extends BaseEntity {
 
-    @NotEmpty
     @Size(min = 10)
     private String salt;
-    @NaturalId
-    @NotBlank
     @Size(min = 5)
     private String username;
     @NotBlank
@@ -28,31 +24,10 @@ public class User extends BaseEntity {
     private String firstName;
     @NotBlank
     private String lastName;
-    @NotBlank
-    private String defaultTimeZone;
-
-
-    public User(String username, String password, String firstName, String lastName) {
-        super();
-        this.username = username;
-        this.salt = RandomStringUtils.random(RandomUtils.nextInt(10, 20));
-        this.passwordHash = hashPassword(password, this.salt);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.defaultTimeZone = "UTC";
-
-    }
 
     public User() {
-        this.salt = RandomStringUtils.random(RandomUtils.nextInt(10, 20));
-        this.defaultTimeZone = "UTC";
+        setSalt(RandomStringUtils.random(RandomUtils.nextInt(10, 20)));
     }
-
-    public User(int id) {
-        setId(id);
-        this.defaultTimeZone = "Wack";
-    }
-
 
     public boolean validCredentials(String proposedPassword) {
         return comparePasswords(proposedPassword, this.passwordHash);
@@ -81,6 +56,14 @@ public class User extends BaseEntity {
     public boolean setUsername(String username) {
         this.username = username;
         return true;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public String getFirstName() {

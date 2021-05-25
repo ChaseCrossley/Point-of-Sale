@@ -1,8 +1,8 @@
 package com.example.pointofsale.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,25 +10,17 @@ import java.util.Set;
 @Table(name = "Item")
 public class Item extends BaseEntity {
 
-    @OneToMany(targetEntity = IngredientItem.class, mappedBy = "ingredient")
+    @NotEmpty
+    @OneToMany(targetEntity = IngredientItem.class, mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<IngredientItem> ingredientItems;
 
+    @Size(min = 2)
     private String name;
+    @Size(min = 2)
     private String description;
 
     public Item() {
-        super();
-    }
-
-    public Item(IngredientItem ingredientItem) {
-        super();
-        ingredientItems = new HashSet<>();
-        ingredientItems.add(ingredientItem);
-    }
-
-    public Item(Set<IngredientItem> ingredientItems) {
-        super();
-        this.ingredientItems = ingredientItems;
+        setIngredientItems(new HashSet<>());
     }
 
     public Set<IngredientItem> getIngredientItems() {
@@ -37,9 +29,11 @@ public class Item extends BaseEntity {
 
     public void setIngredientItems(Set<IngredientItem> ingredientItems) {
         this.ingredientItems = ingredientItems;
+        this.ingredientItems.forEach((ingredientItem) -> ingredientItem.setItem(this));
     }
 
     public void addOneIngredientItem(IngredientItem ingredientItem) {
+        ingredientItem.setItem(this);
         this.ingredientItems.add(ingredientItem);
     }
 
