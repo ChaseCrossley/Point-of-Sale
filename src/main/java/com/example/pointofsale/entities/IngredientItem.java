@@ -1,11 +1,9 @@
 package com.example.pointofsale.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Proxy;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,21 +17,25 @@ public class IngredientItem extends BaseEntity {
     Ingredient ingredient;
 
     @NotNull
+    @JsonIgnore
     @JoinColumn(name = "fk_itemId", referencedColumnName = "id")
     @ManyToOne(targetEntity = Item.class)
     Item item;
 
+    @NotNull
+    @JoinColumn(name = "fk_servingId", referencedColumnName = "id")
+    @OneToOne(targetEntity = Serving.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    Serving serving;
+
     public IngredientItem() {
-        super();
     }
 
-    public IngredientItem(Ingredient ingredient, Item item) {
-        this.ingredient = ingredient;
-        this.item = item;
+    public Serving getServing() {
+        return serving;
     }
 
-    public IngredientItem(Ingredient ingredient) {
-        this.ingredient = ingredient;
+    public void setServing(Serving serving) {
+        this.serving = serving;
     }
 
     public Ingredient getIngredient() {

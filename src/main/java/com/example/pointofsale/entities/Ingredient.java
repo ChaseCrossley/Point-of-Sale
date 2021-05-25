@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Ingredient")
+@Table(name = "Ingredient", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Ingredient extends BaseEntity {
 
     @NotNull
@@ -42,12 +42,8 @@ public class Ingredient extends BaseEntity {
         this.unit = unit;
     }
 
-    public Integer getServingAmount() {
-        return servingAmount;
-    }
-
-    public void setServingAmount(Integer servingAmount) {
-        this.servingAmount = servingAmount;
+    public String getName() {
+        return name;
     }
 
     public Long getTimesUsed() {
